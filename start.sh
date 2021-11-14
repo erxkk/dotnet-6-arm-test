@@ -27,7 +27,13 @@ for i in {5,6}; do
 done
 
 echo "removing residual build containers"
-_DOCKER_RES=$(docker image ls | awk '/^<none>/{ print $3 }')
+_DOCKER_IMG=$(docker image ls | awk '/^<none>/{ print $3 }')
 
-[[ -n $_DOCKER_RES ]] && for img in $_DOCKER_RES; do _DOCKER_CON=$(docker ps -e | grep $img | awk '{ print $1 }'); [[ -n $_DOCKER_CON]] && docker rm $_DOCKER_CON done && echo $_DOCKER_RES | xargs docker image rm
-
+if [[ -n $_DOCKER_IMG ]]; then
+    for img in $_DOCKER_IMG; do
+        _DOCKER_CON=$(docker ps -a | awk "/$img/{ print \$1 }")
+        [[ -n $_DOCKER_CON ]] && docker rm $_DOCKER_CON
+    done
+    
+    echo $_DOCKER_RES | xargs docker image rm
+fi
