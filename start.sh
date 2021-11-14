@@ -29,7 +29,7 @@ for i in {5,6}; do
     echo "=> inspecting mcr $i images"
     mkdir ./out/mcr-$i-{runtime,sdk}
     docker inspect mcr.microsoft.com/dotnet/sdk:$i.0 &>> ./out/mcr-$i-sdk/image.json
-    docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> /.out/mcr-$i-runtime/image.json
+    docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> ./out/mcr-$i-runtime/image.json
 done
 
 echo "removing residual build containers"
