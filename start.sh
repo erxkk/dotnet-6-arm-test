@@ -3,26 +3,31 @@
 for i in {5,6}; do
     echo "=> $i.0 pass"
     for t in {build,prebuilt}; do
-        mkdir ./out/dotnet-$i-$t
+        _ic="dotnet-$i-$t"
+        _dir="./out/$_ic"
+        
+        echo " => preparing out dir"
+        mkdir $_dir
+
         echo " => building $i.0-$t"
-        docker build --tag dotnet-$i-$t ./dotnet-$i-$t &>> ./out/dotnet-$i-$t/build.log
+        docker build --tag $_ic $_ic &>> $_dir/build.log
 
         echo " => inspecting $i.0-$t image"
-        docker image inspect dotnet-$i-$t &>> ./out/dotnet-$i-$t/image.json
+        docker image inspect $_ic &>> $_dir/image.json
 
         echo " => running $i.0-$t"
-        docker run --name dotnet-$i-$t dotnet-$i-$t &>> ./out/dotnet-$i-$t/run.log
+        docker run --name $_ic $_ic &>> $_dir/run.log
 
         echo " => inspecting $i.0-$t container"
-        docker inspect dotnet-$i-$t &>> ./out/dotnet-$i-$t/container.json
+        docker inspect $_ic &>> $_dir/container.json
 
         echo " => cleaning $i.0-$t"
-        docker rm dotnet-$i-$t &>> ./out/dotnet-$i-$t/build-clean.log
-        docker image rm dotnet-$i-$t &>> /.out/dotnet-$-$t/image-clean.log
+        docker rm $_ic &>> $_dir/build-clean.log
+        docker image rm $_ic &>> $_dir/image-clean.log
     done
 
     echo "=> inspecting mcr $i images"
-    mkdir ./out/mcdr-$i-{runtime,sdk}
+    mkdir ./out/mcr-$i-{runtime,sdk}
     docker inspect mcr.microsoft.com/dotnet/sdk:$i.0 &>> ./out/mcr-$i-sdk/image.json
     docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> /.out/mcr-$i-runtime/image.json
 done
