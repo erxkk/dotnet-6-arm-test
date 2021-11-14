@@ -26,7 +26,8 @@ for i in {5,6}; do
     docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> out/mcr-$i-runtime.image.json
 done
 
-echo "remvoing residual build container"
+echo "removing residual build containers"
 _DOCKER_RES=$(docker image ls | awk '/^<none>/{ print $3 }')
-[[ -n $DOCKER_RES ]] && echo $_DOCKER_RES | xargs docker image rm
+
+[[ -n $_DOCKER_RES ]] && for img in $_DOCKER_RES; do _DOCKER_CON=$(docker ps -e | grep $img | awk '{ print $1 }'); [[ -n $_DOCKER_CON]] && docker rm $_DOCKER_CON done && echo $_DOCKER_RES | xargs docker image rm
 
