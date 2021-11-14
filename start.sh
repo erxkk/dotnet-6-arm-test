@@ -2,8 +2,8 @@
 
 [[ ! -d 'out' ]] && mkdir out
 
-for i in 5, 6; do
-    for t in 'build', 'prebuilt'; do
+for i in {5, 6}; do
+    for t in {'build', 'prebuilt'}; do
         echo "=> building $i-$t"
         docker build --tag dotnet-$i-$t ./dotnet-$i-$t &>> out/dotnet-$i-$t.build.log
 
@@ -24,5 +24,10 @@ for i in 5, 6; do
     echo "inspecting mcr $i images"
     docker inspect mcr.microsoft.com/dotnet/sdk:$i.0 &>> out/mcr-$i-runtime.image.log
     docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> out/mcr-$i-runtime.image.log
+
+    echo "remvoing residual build container"
 done
+
+$_DOCKER_RES=$(docker image ls | awk '/^<none>/{ print $3 }')
+[[ -n $DOCKER_RES ]] && docker image rm $_DOCKER_RES
 
