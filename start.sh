@@ -38,7 +38,7 @@ _DOCKER_IMG=$(docker image ls | awk '/^<none>/{ print $3 }')
 if [[ -n $_DOCKER_IMG ]]; then
     for img in $_DOCKER_IMG; do
         _DOCKER_CON=$(docker ps -a | awk "/$img/{ print \$1 }")
-        [[ -n $_DOCKER_CON ]] && docker rm $_DOCKER_CON    
-        docker image rm $img
+        [[ -n $_DOCKER_CON ]] && docker rm $_DOCKER_CON &> /dev/null
+        docker image rm $img &> /dev/null
     done
 fi
