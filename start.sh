@@ -2,8 +2,8 @@
 
 [[! -d 'out' ]] && mkdir out
 
-for i in [5, 6]; do
-    for t in ['build', 'prebuilt']; do
+for i in 5, 6; do
+    for t in 'build', 'prebuilt'; do
         echo "=> building $i-$t"
         docker build --tag dotnet-$i-$t ./dotnet-$i-$t &>> out/dotnet-$i-$t.build.log
 
