@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[! -d 'out' ]] && mkdir out
+[[ ! -d 'out' ]] && mkdir out
 
 for i in 5, 6; do
     for t in 'build', 'prebuilt'; do
