@@ -1,29 +1,28 @@
 #!/bin/bash
 
-[[ ! -d 'out' ]] && mkdir out
-
 for i in {5,6}; do
+    echo "=> $i.0 pass"
     for t in {build,prebuilt}; do
-        echo "==> building $i-$t"
-        docker build --tag dotnet-$i-$t ./dotnet-$i-$t &>> out/dotnet-$i-$t.build.log
+        echo " => building $i.0-$t"
+        docker build --tag dotnet-$i-$t ./dotnet-$i-$t &>> ./out/dotnet-$i-$t/build.log
 
-        echo "==> inspecting $i-$t image"
-        docker image inspect dotnet-$i-$t &>> out/dotnet-$i-$t.image.json
+        echo " => inspecting $i.0-$t image"
+        docker image inspect dotnet-$i-$t &>> ./out/dotnet-$i-$t/image.json
 
-        echo "==> running $i-$t"
-        docker run --name dotnet-$i-$t dotnet-$i-$t &>> out/dotnet-$i-$t.run.log
+        echo " => running $i.0-$t"
+        docker run --name dotnet-$i-$t dotnet-$i-$t &>> ./out/dotnet-$i-$t/run.log
 
-        echo "==> inspecting $i-$t container"
-        docker inspect dotnet-$i-$t &>> out/dotnet-$i-$t.image.json
+        echo " => inspecting $i.0-$t container"
+        docker inspect dotnet-$i-$t &>> ./out/dotnet-$i-$t/container.json
 
-        echo "==> cleaning $i-$t"
-        docker rm dotnet-$i-$t &>> /dev/null
-        docker image rm dotnet-$i-$t &>> /dev/null
+        echo " => cleaning $i.0-$t"
+        docker rm dotnet-$i-$t &>> ./out/dotnet-$i-$t/build-clean.log
+        docker image rm dotnet-$i-$t &>> /.out/dotnet-$-$t/image-clean.log
     done
 
     echo "=> inspecting mcr $i images"
-    docker inspect mcr.microsoft.com/dotnet/sdk:$i.0 &>> out/mcr-$i-runtime.image.json
-    docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> out/mcr-$i-runtime.image.json
+    docker inspect mcr.microsoft.com/dotnet/sdk:$i.0 &>> out/mcr-$i-runtime/image.json
+    docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> out/mcr-$i-runtime/image.json
 done
 
 echo "removing residual build containers"
