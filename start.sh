@@ -3,6 +3,7 @@
 for i in {5,6}; do
     echo "=> $i.0 pass"
     for t in {build,prebuilt}; do
+        mkdir ./out/dotnet-$i-$t
         echo " => building $i.0-$t"
         docker build --tag dotnet-$i-$t ./dotnet-$i-$t &>> ./out/dotnet-$i-$t/build.log
 
@@ -21,8 +22,9 @@ for i in {5,6}; do
     done
 
     echo "=> inspecting mcr $i images"
-    docker inspect mcr.microsoft.com/dotnet/sdk:$i.0 &>> out/mcr-$i-runtime/image.json
-    docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> out/mcr-$i-runtime/image.json
+    mkdir ./out/mcdr-$i-{runtime,sdk}
+    docker inspect mcr.microsoft.com/dotnet/sdk:$i.0 &>> ./out/mcr-$i-sdk/image.json
+    docker inspect mcr.microsoft.com/dotnet/runtime:$i.0 &>> /.out/mcr-$i-runtime/image.json
 done
 
 echo "removing residual build containers"
